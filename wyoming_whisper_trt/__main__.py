@@ -108,9 +108,9 @@ async def main() -> None:
         )
 
     # Start server
-    async with AsyncServer.from_uri(args.uri) as server:
-        _LOGGER.info("Ready")
-        await server.run(create_handler)
+    server = AsyncServer.from_uri(args.uri)
+    _LOGGER.info("Ready")
+    await server.run(create_handler)
 
 
 if __name__ == "__main__":
