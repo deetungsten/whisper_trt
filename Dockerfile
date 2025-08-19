@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ENV CUDA_HOME=/usr/local/cuda
 ENV PATH=$PATH:$CUDA_HOME/bin
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CUDA_HOME/lib64
+# Force rebuild - updated error handling for torch2trt/whisper_trt
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
