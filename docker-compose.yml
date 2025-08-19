@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  wyoming-whisper-trt:
+    build: .
+    ports:
+      - "10300:10300"
+    volumes:
+      - ./data:/data
+      - ~/.cache/whisper_trt:/root/.cache/whisper_trt
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    runtime: nvidia
+    command: [
+      "--uri", "tcp://0.0.0.0:10300",
+      "--model", "small.en",
+      "--data-dir", "/data",
+      "--debug"
+    ]
+    restart: unless-stopped

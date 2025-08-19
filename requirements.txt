@@ -1,0 +1,4 @@
+wyoming>=1.5.0
+whisper-trt>=0.1.0
+torch>=1.13.0
+torchaudio>=0.13.0

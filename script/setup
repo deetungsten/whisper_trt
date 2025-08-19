@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -e
+
+this_dir="$( cd "$( dirname "$0" )" && pwd )"
+src_dir="$(realpath "${this_dir}/..")"
+
+python_name='python3'
+
+# Create virtual environment
+venv="${src_dir}/.venv"
+if [ ! -d "${venv}" ]; then
+    echo "Creating virtual environment at ${venv}"
+    "${python_name}" -m venv "${venv}"
+fi
+
+# Activate virtual environment
+source "${venv}/bin/activate"
+
+# Install Python dependencies
+echo "Installing Python dependencies"
+pip3 install --upgrade pip
+pip3 install --upgrade wheel setuptools
+pip3 install -r "${src_dir}/requirements.txt"
+
+# Install in development mode
+pip3 install -e "${src_dir}"
+
+echo "Setup complete. Activate with: source .venv/bin/activate"
