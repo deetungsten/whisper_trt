@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/l4t-pytorch:r35.2.1-pth2.0-py3
+FROM python:3.9-slim
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -9,35 +9,27 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     git \
     wget \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Upgrade NumPy first (L4T container has old version)
-RUN pip3 install --no-cache-dir --upgrade numpy>=1.22.0
-
-# Install dependencies available on PyPI
+# Copy requirements and install basic dependencies
 RUN pip3 install --no-cache-dir \
     wyoming>=1.5.0 \
-    openai-whisper \
-    psutil
-
-# Install torch2trt from source (not on PyPI)
-RUN git clone https://github.com/NVIDIA-AI-IOT/torch2trt /tmp/torch2trt && \
-    cd /tmp/torch2trt && \
-    python3 setup.py install && \
-    rm -rf /tmp/torch2trt
-
-# Install whisper_trt from source (now that all deps are available)
-RUN git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git /tmp/whisper_trt && \
-    cd /tmp/whisper_trt && \
-    pip3 install --no-cache-dir -e . && \
-    rm -rf /tmp/whisper_trt
+    torch \
+    torchaudio \
+    openai-whisper
 
 # Copy application code
 COPY wyoming_whisper_trt/ ./wyoming_whisper_trt/
 COPY setup.py .
+
+# Create a stub whisper_trt module for non-Jetson environments
+RUN mkdir -p /usr/local/lib/python3.9/site-packages/whisper_trt && \
+    echo "# Stub whisper_trt for non-Jetson environments" > /usr/local/lib/python3.9/site-packages/whisper_trt/__init__.py && \
+    echo "def load_trt_model(model_name): raise ImportError('whisper_trt requires NVIDIA Jetson hardware')" >> /usr/local/lib/python3.9/site-packages/whisper_trt/__init__.py
 
 # Install the package
 RUN pip3 install -e .

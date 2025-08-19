@@ -61,21 +61,27 @@ cd whisper_trt
 pip3 install -e .
 ```
 
-### Docker Installation (Jetson)
+### Docker Installation
 
-The Dockerfile uses NVIDIA's L4T PyTorch container optimized for Jetson:
+#### For Development/Testing (Regular Whisper)
+```bash
+docker-compose up -d
+```
 
-1. Build the Docker image:
-   ```bash
-   docker build -t wyoming-whisper-trt .
-   ```
+#### For Jetson Hardware (TensorRT Optimized)
 
-2. Run with Docker Compose:
-   ```bash
-   docker-compose up -d
-   ```
+First, install whisper_trt on your Jetson host:
+```bash
+# On your Jetson Orin Nano
+git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git
+cd whisper_trt
+sudo python3 setup.py install
+```
 
-Note: The container includes PyTorch and TensorRT pre-installed for Jetson devices.
+Then run the Jetson-optimized container:
+```bash
+docker-compose --profile jetson up -d wyoming-whisper-trt-jetson
+```
 
 ## Usage
 

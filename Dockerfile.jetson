@@ -1,0 +1,38 @@
+FROM nvcr.io/nvidia/l4t-pytorch:r35.2.1-pth2.0-py3
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    git \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install Wyoming
+RUN pip3 install --no-cache-dir wyoming>=1.5.0
+
+# Copy application code first
+COPY wyoming_whisper_trt/ ./wyoming_whisper_trt/
+COPY setup.py .
+
+# Install our Wyoming wrapper
+RUN pip3 install -e .
+
+# Create data directory
+RUN mkdir -p /data
+
+# Expose port
+EXPOSE 10300
+
+# Note: whisper_trt should be installed on the host Jetson system
+# This container assumes whisper_trt is available in the Python environment
+
+# Set default command
+ENTRYPOINT ["python3", "-m", "wyoming_whisper_trt"]
+CMD ["--uri", "tcp://0.0.0.0:10300", "--model", "tiny.en"]

@@ -182,21 +182,27 @@ class WhisperTRTEventHandler(AsyncEventHandler):
 
     def _load_model_sync(self):
         """Load Whisper TensorRT model synchronously."""
-        import whisper_trt
-        
-        # Check if model exists in cache
-        model_path = self.model_dir / f"{self.model_name}.engine"
-        
-        if model_path.exists():
-            _LOGGER.info("Loading cached TensorRT engine: %s", model_path)
-            return whisper_trt.load_trt_model(str(model_path))
-        else:
-            _LOGGER.info("Building TensorRT engine for model: %s", self.model_name)
-            model = whisper_trt.load_trt_model(self.model_name)
+        try:
+            import whisper_trt
             
-            # Save the built engine
-            model_path.parent.mkdir(parents=True, exist_ok=True)
-            _LOGGER.info("Saving TensorRT engine to: %s", model_path)
-            # Note: whisper_trt automatically caches engines in ~/.cache/whisper_trt/
+            # Check if model exists in cache
+            model_path = self.model_dir / f"{self.model_name}.engine"
             
-            return model
+            if model_path.exists():
+                _LOGGER.info("Loading cached TensorRT engine: %s", model_path)
+                return whisper_trt.load_trt_model(str(model_path))
+            else:
+                _LOGGER.info("Building TensorRT engine for model: %s", self.model_name)
+                model = whisper_trt.load_trt_model(self.model_name)
+                
+                # Save the built engine
+                model_path.parent.mkdir(parents=True, exist_ok=True)
+                _LOGGER.info("Saving TensorRT engine to: %s", model_path)
+                # Note: whisper_trt automatically caches engines in ~/.cache/whisper_trt/
+                
+                return model
+                
+        except ImportError:
+            _LOGGER.warning("whisper_trt not available, falling back to regular whisper")
+            import whisper
+            return whisper.load_model(self.model_name)

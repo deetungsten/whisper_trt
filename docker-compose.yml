@@ -1,13 +1,32 @@
 version: '3.8'
 
 services:
+  # For testing/development (uses regular whisper)
   wyoming-whisper-trt:
     build: .
     ports:
       - "10300:10300"
     volumes:
       - ./data:/data
+    command: [
+      "--uri", "tcp://0.0.0.0:10300",
+      "--model", "tiny.en",
+      "--data-dir", "/data",
+      "--debug"
+    ]
+    restart: unless-stopped
+
+  # For Jetson hardware (requires host whisper_trt installation)
+  wyoming-whisper-trt-jetson:
+    build:
+      context: .
+      dockerfile: Dockerfile.jetson
+    ports:
+      - "10300:10300"
+    volumes:
+      - ./data:/data
       - ~/.cache/whisper_trt:/root/.cache/whisper_trt
+      - /usr/local/lib/python3.8/dist-packages:/usr/local/lib/python3.8/dist-packages:ro
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     runtime: nvidia
@@ -25,3 +44,4 @@ services:
       "--debug"
     ]
     restart: unless-stopped
+    profiles: ["jetson"]
