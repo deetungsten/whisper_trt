@@ -96,7 +96,7 @@ async def main() -> None:
     )
 
     # Create event handler factory
-    def create_handler():
+    def create_handler(reader, writer):
         return WhisperTRTEventHandler(
             wyoming_info,
             args.model,
@@ -105,6 +105,8 @@ async def main() -> None:
             beam_size=args.beam_size,
             data_dir=Path(args.data_dir) if args.data_dir else None,
             download_dir=Path(args.download_dir) if args.download_dir else None,
+            reader=reader,
+            writer=writer,
         )
 
     # Start server

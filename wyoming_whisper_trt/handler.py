@@ -29,8 +29,11 @@ class WhisperTRTEventHandler(AsyncEventHandler):
         beam_size: int = 5,
         data_dir: Optional[Path] = None,
         download_dir: Optional[Path] = None,
+        reader=None,
+        writer=None,
     ) -> None:
         """Initialize handler."""
+        super().__init__(reader, writer)
         
         self.wyoming_info = wyoming_info
         self.model_name = model_name
