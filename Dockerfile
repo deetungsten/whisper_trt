@@ -17,12 +17,17 @@ WORKDIR /app
 # Upgrade NumPy first (L4T container has old version)
 RUN pip3 install --no-cache-dir --upgrade numpy>=1.22.0
 
-# Install all whisper_trt dependencies first
+# Install dependencies available on PyPI
 RUN pip3 install --no-cache-dir \
     wyoming>=1.5.0 \
     openai-whisper \
-    psutil \
-    torch2trt
+    psutil
+
+# Install torch2trt from source (not on PyPI)
+RUN git clone https://github.com/NVIDIA-AI-IOT/torch2trt /tmp/torch2trt && \
+    cd /tmp/torch2trt && \
+    python3 setup.py install && \
+    rm -rf /tmp/torch2trt
 
 # Install whisper_trt from source (now that all deps are available)
 RUN git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git /tmp/whisper_trt && \
