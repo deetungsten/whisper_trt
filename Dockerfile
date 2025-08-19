@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
+# Upgrade NumPy first (L4T container has old version)
+RUN pip3 install --no-cache-dir --upgrade numpy>=1.22.0
+
 # Install dependencies step by step for better error handling
 RUN pip3 install --no-cache-dir wyoming>=1.5.0
 
