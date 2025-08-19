@@ -17,6 +17,9 @@ WORKDIR /app
 # Install dependencies step by step for better error handling
 RUN pip3 install --no-cache-dir wyoming>=1.5.0
 
+# Install whisper dependencies first
+RUN pip3 install --no-cache-dir openai-whisper
+
 # Install whisper_trt from source
 RUN git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git /tmp/whisper_trt && \
     cd /tmp/whisper_trt && \
