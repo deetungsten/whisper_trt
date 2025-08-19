@@ -14,11 +14,14 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Install dependencies step by step for better error handling
+RUN pip3 install --no-cache-dir wyoming>=1.5.0
 
-# Install Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Install whisper_trt from source
+RUN git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git /tmp/whisper_trt && \
+    cd /tmp/whisper_trt && \
+    pip3 install --no-cache-dir -e . && \
+    rm -rf /tmp/whisper_trt
 
 # Copy application code
 COPY wyoming_whisper_trt/ ./wyoming_whisper_trt/
