@@ -95,21 +95,22 @@ async def main() -> None:
         ],
     )
 
-    # Create event handler
-    handler = WhisperTRTEventHandler(
-        wyoming_info,
-        args.model,
-        model_dir=model_dir,
-        language=args.language,
-        beam_size=args.beam_size,
-        data_dir=Path(args.data_dir) if args.data_dir else None,
-        download_dir=Path(args.download_dir) if args.download_dir else None,
-    )
+    # Create event handler factory
+    def create_handler():
+        return WhisperTRTEventHandler(
+            wyoming_info,
+            args.model,
+            model_dir=model_dir,
+            language=args.language,
+            beam_size=args.beam_size,
+            data_dir=Path(args.data_dir) if args.data_dir else None,
+            download_dir=Path(args.download_dir) if args.download_dir else None,
+        )
 
     # Start server
     async with AsyncServer.from_uri(args.uri) as server:
         _LOGGER.info("Ready")
-        await server.run(handler.handle_event)
+        await server.run(create_handler)
 
 
 if __name__ == "__main__":

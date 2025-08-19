@@ -31,7 +31,6 @@ class WhisperTRTEventHandler(AsyncEventHandler):
         download_dir: Optional[Path] = None,
     ) -> None:
         """Initialize handler."""
-        super().__init__()
         
         self.wyoming_info = wyoming_info
         self.model_name = model_name
