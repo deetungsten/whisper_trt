@@ -13,23 +13,29 @@ A [Wyoming protocol](https://github.com/rhasspy/wyoming) server for speech recog
 
 ## Requirements
 
+### NVIDIA Jetson Orin Nano (Recommended)
+
+This integration is optimized for NVIDIA Jetson devices, especially the Orin Nano:
+- JetPack 5.1+ (Ubuntu 20.04)
+- Python 3.8+
+- PyTorch (pre-installed in L4T containers)
+- TensorRT (pre-installed in L4T containers)
+
+### Other NVIDIA GPUs
+
 - NVIDIA GPU with CUDA support
 - Python 3.8+
 - PyTorch with CUDA support
 - TensorRT
 
-### For NVIDIA Jetson
-
-This integration is particularly optimized for NVIDIA Jetson devices (Orin, Xavier, Nano).
-
 ## Installation
 
-### Local Installation
+### Local Installation (Jetson Orin Nano)
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/whisper-tensorrt
-   cd whisper-tensorrt
+   git clone https://github.com/deetungsten/whisper_trt
+   cd whisper_trt
    ```
 
 2. Run the setup script:
@@ -42,7 +48,22 @@ This integration is particularly optimized for NVIDIA Jetson devices (Orin, Xavi
    source .venv/bin/activate
    ```
 
-### Docker Installation
+### Alternative Installation (Manual)
+
+For Jetson devices, you may prefer installing dependencies manually:
+```bash
+# Install Wyoming
+pip3 install wyoming
+
+# Install Whisper TensorRT
+git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git
+cd whisper_trt
+pip3 install -e .
+```
+
+### Docker Installation (Jetson)
+
+The Dockerfile uses NVIDIA's L4T PyTorch container optimized for Jetson:
 
 1. Build the Docker image:
    ```bash
@@ -53,6 +74,8 @@ This integration is particularly optimized for NVIDIA Jetson devices (Orin, Xavi
    ```bash
    docker-compose up -d
    ```
+
+Note: The container includes PyTorch and TensorRT pre-installed for Jetson devices.
 
 ## Usage
 

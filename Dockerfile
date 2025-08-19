@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8-devel-ubuntu22.04
+FROM nvcr.io/nvidia/l4t-pytorch:r35.2.1-pth2.0-py3
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -6,9 +6,6 @@ ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
     ffmpeg \
     git \
     wget \
