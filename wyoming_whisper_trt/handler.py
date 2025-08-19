@@ -88,8 +88,12 @@ class WhisperTRTEventHandler(AsyncEventHandler):
         if Transcribe.is_type(event.type):
             # Handle direct transcription request
             transcribe = Transcribe.from_event(event)
-            if transcribe.audio:
-                transcript = await self._transcribe_audio(transcribe.audio)
+            _LOGGER.debug("Transcribe request received: name=%s, language=%s", 
+                         transcribe.name, transcribe.language)
+            
+            # Audio should already be accumulated from previous AudioChunk events
+            if self._audio_buffer:
+                transcript = await self._transcribe_audio(self._audio_buffer)
                 await self.write_event(transcript.event())
             
             return True
