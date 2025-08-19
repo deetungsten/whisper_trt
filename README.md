@@ -63,25 +63,18 @@ pip3 install -e .
 
 ### Docker Installation
 
-#### For Development/Testing (Regular Whisper)
+The Docker image now includes native whisper_trt support built from source:
+
 ```bash
 docker-compose up -d
 ```
 
-#### For Jetson Hardware (TensorRT Optimized)
+This will:
+- Build the L4T container with whisper_trt included
+- Enable GPU access for TensorRT acceleration
+- Cache models in `~/.cache/whisper_trt`
 
-First, install whisper_trt on your Jetson host:
-```bash
-# On your Jetson Orin Nano
-git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git
-cd whisper_trt
-sudo python3 setup.py install
-```
-
-Then run the Jetson-optimized container:
-```bash
-docker-compose --profile jetson up -d wyoming-whisper-trt-jetson
-```
+**Note**: The first model load will build the TensorRT engine which takes a few minutes. Subsequent runs will use the cached engine for fast startup.
 
 ## Usage
 
