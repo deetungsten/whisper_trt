@@ -87,6 +87,7 @@ async def main() -> None:
                             url="https://github.com/openai/whisper"
                         ),
                         installed=True,
+                        version="1.0.0",
                         languages=["en"] if args.model.endswith(".en") else None,
                     )
                 ],
