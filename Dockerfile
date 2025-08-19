@@ -42,17 +42,19 @@ RUN pip3 install --no-cache-dir \
     tiktoken \
     openai-whisper
 
-# Install torch2trt from source with proper error handling
+# Try to install torch2trt and whisper_trt, but don't fail if TensorRT issues occur
 RUN git clone https://github.com/NVIDIA-AI-IOT/torch2trt /tmp/torch2trt && \
     cd /tmp/torch2trt && \
-    python3 setup.py install --user && \
+    (python3 setup.py install --user || echo "torch2trt installation failed, will use runtime mounting") && \
     cd / && rm -rf /tmp/torch2trt
 
-# Install whisper_trt from source with proper error handling  
 RUN git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git /tmp/whisper_trt && \
     cd /tmp/whisper_trt && \
-    python3 setup.py install --user && \
+    (python3 setup.py install --user || echo "whisper_trt installation failed, will use runtime mounting") && \
     cd / && rm -rf /tmp/whisper_trt
+
+# Create fallback directories for runtime mounting
+RUN mkdir -p /opt/whisper_trt /opt/torch2trt
 
 # Copy application code
 COPY wyoming_whisper_trt/ ./wyoming_whisper_trt/

@@ -63,16 +63,33 @@ pip3 install -e .
 
 ### Docker Installation
 
-The Docker image now includes native whisper_trt support built from source:
+#### Option 1: With Host whisper_trt (Recommended for Jetson)
 
+First, install whisper_trt on your Jetson host:
+```bash
+# Install torch2trt
+git clone https://github.com/NVIDIA-AI-IOT/torch2trt
+cd torch2trt
+sudo python3 setup.py install
+
+# Install whisper_trt  
+cd ..
+git clone https://github.com/NVIDIA-AI-IOT/whisper_trt.git
+cd whisper_trt
+sudo python3 setup.py install
+```
+
+Then run the container (it will mount host libraries):
 ```bash
 docker-compose up -d
 ```
 
-This will:
-- Build the L4T container with whisper_trt included
-- Enable GPU access for TensorRT acceleration
-- Cache models in `~/.cache/whisper_trt`
+#### Option 2: Container-only (Fallback)
+
+If host installation fails, the container will fall back to regular Whisper:
+```bash
+docker-compose up -d
+```
 
 **Note**: The first model load will build the TensorRT engine which takes a few minutes. Subsequent runs will use the cached engine for fast startup.
 

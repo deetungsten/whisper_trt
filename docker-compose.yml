@@ -8,8 +8,16 @@ services:
     volumes:
       - ./data:/data
       - ~/.cache/whisper_trt:/root/.cache/whisper_trt
+      # Mount host Python packages if they exist (for whisper_trt)
+      - /usr/local/lib/python3.8/dist-packages:/host/python3.8/dist-packages:ro
+      - /home/${USER}/.local/lib/python3.8/site-packages:/host/user-packages:ro
+      # Mount TensorRT libraries
+      - /usr/lib/aarch64-linux-gnu:/host/lib/aarch64-linux-gnu:ro
+      - /usr/local/cuda:/host/cuda:ro
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - PYTHONPATH=/host/python3.8/dist-packages:/host/user-packages:${PYTHONPATH}
+      - LD_LIBRARY_PATH=/host/lib/aarch64-linux-gnu:/host/cuda/lib64:${LD_LIBRARY_PATH}
     runtime: nvidia
     deploy:
       resources:
